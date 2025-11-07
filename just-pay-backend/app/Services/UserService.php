@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Log;
 
 class UserService
 {
+    public function __construct(private StripeService $stripeService) {}
+
     public function register(array $data): User
     {
         DB::beginTransaction();
@@ -20,9 +22,9 @@ class UserService
                 'password' => Hash::make($data['password']),
             ]);
 
-            $user->createAsStripeCustomer();
+            $this->stripeService->createCustomer($user);
 
-            $user->newSubscription('default', env('STRIPE_FREE_PLAN_ID'))->create();
+            $this->stripeService->subscribeToFreePlan($user);
 
             DB::commit();
 
