@@ -21,6 +21,11 @@ class AuthService
         return ['user' => $user, 'access_token' => $token];
     }
 
+    public function logout(): void
+    {
+        $this->deleteCurrentUserToken();
+    }
+
     public function validateCredentials(string $email, string $password): User
     {
 
@@ -50,7 +55,7 @@ class AuthService
     {
         $user = Auth::user();
 
-        if ($user) {
+        if ($user && $user->currentAccessToken()) {
             $user->currentAccessToken()->delete();
         }
     }
