@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\PlanController;
 use App\Http\Controllers\StripeWebhookController;
 use App\Http\Controllers\SubscriptionController;
 use Illuminate\Support\Facades\Route;
@@ -16,6 +17,10 @@ Route::middleware(['auth:sanctum', 'check.token.expiration'])->group(function ()
     Route::prefix('subscriptions')->group(function () {
         Route::get('current', [SubscriptionController::class, 'getCurrentSubscription']);
         Route::post('cancel', [SubscriptionController::class, 'cancelSubscription']);
+    });
+
+    Route::prefix('plans')->group(function () {
+        Route::get('/', [PlanController::class, 'index']);
     });
 });
 
