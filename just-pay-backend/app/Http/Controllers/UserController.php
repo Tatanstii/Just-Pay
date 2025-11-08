@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\User\RegisterRequest;
+use App\Services\AuthService;
 use App\Services\UserService;
 use App\Traits\ApiResponseTrait;
 use Illuminate\Http\Request;
@@ -11,18 +12,12 @@ class UserController extends Controller
 {
     use ApiResponseTrait;
 
-    protected UserService $userService;
-
-    public function __construct(UserService $userService)
-    {
-        $this->userService = $userService;
-    }
+    public function __construct(private UserService $userService, private AuthService $authService) {}
 
     public function register(RegisterRequest $request)
     {
         $user = $this->userService->register($request->validated());
-
-        $token = $user->createToken('auth_token')->plainTextToken;
+        $token = $this->authService->createTokenForUser($user);
 
         return $this->successResponse([
             'user' => $user,
