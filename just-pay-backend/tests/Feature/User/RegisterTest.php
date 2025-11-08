@@ -5,7 +5,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-test('user can register successfully', function () {
+it('registers a user successfully', function () {
     $stripe = Mockery::mock(StripeService::class);
     $stripe->shouldReceive('createCustomer')->once();
     $stripe->shouldReceive('subscribeToFreePlan')->once();
@@ -21,7 +21,15 @@ test('user can register successfully', function () {
 
     $response = $this->postJson('/api/register', $payload);
 
-    $response->assertStatus(201);
+    $response->assertStatus(201)
+        ->assertJsonStructure([
+            'message',
+            'data' => [
+                'user' => ['id', 'name', 'email'],
+                'access_token',
+                'token_type',
+            ]
+        ]);
 
     $this->assertDatabaseHas('users', [
         'email' => 'john@example.com',
