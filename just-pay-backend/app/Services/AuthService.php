@@ -59,4 +59,9 @@ class AuthService
             $user->currentAccessToken()->delete();
         }
     }
+
+    public function getAuthenticatedUser(): User
+    {
+        return Auth::user();
+    }
 }

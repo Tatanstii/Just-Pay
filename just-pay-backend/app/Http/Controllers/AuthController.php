@@ -25,4 +25,10 @@ class AuthController extends Controller
         $this->authService->logout();
         return $this->successResponse([], 'User logged out successfully');
     }
+
+    public function user()
+    {
+        $user = $this->authService->getAuthenticatedUser();
+        return $this->successResponse($user, 'Authenticated user retrieved successfully');
+    }
 }

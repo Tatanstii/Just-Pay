@@ -25,4 +25,9 @@ class UserController extends Controller
             'token_type' => 'Bearer',
         ], 'User registered successfully', 201);
     }
+
+    public function profile(Request $request)
+    {
+        return $this->successResponse($request->user(), 'User profile retrieved successfully');
+    }
 }
