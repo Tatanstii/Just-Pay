@@ -49,7 +49,7 @@ class User extends Authenticatable
         ];
     }
 
-    public function plans()
+    public function plan()
     {
         return $this->belongsTo(Plan::class);
     }
