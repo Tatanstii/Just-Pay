@@ -43,7 +43,10 @@ class AuthService
     public function createTokenForUser(User $user): string
     {
         $this->deleteUserTokens($user);
-        return $user->createToken('auth_token')->plainTextToken;
+        $token = $user->createToken('auth_token');
+        $token->accessToken->expires_at = now()->addHours(8);
+        $token->accessToken->save();
+        return $token->plainTextToken;
     }
 
     public function deleteUserTokens(User $user): void
@@ -63,5 +66,12 @@ class AuthService
     public function getAuthenticatedUser(): User
     {
         return Auth::user();
+    }
+
+    public function checkIsTokenExpired(): bool
+    {
+        $user = Auth::user();
+        $token = $user->currentAccessToken();
+        return $token && $token->expires_at && $token->expires_at->isPast();
     }
 }
