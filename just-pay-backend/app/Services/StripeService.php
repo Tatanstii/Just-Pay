@@ -10,10 +10,4 @@ class StripeService
     {
         return $user->createAsStripeCustomer();
     }
-
-    public function subscribeToFreePlan(User $user)
-    {
-        return $user->newSubscription('default', env('STRIPE_FREE_PLAN_ID'))
-            ->create();
-    }
 }

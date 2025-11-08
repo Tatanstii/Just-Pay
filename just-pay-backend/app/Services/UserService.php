@@ -6,11 +6,10 @@ use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Validation\ValidationException;
 
 class UserService
 {
-    public function __construct(private StripeService $stripeService) {}
+    public function __construct(private StripeService $stripeService, private SubscriptionService $subscriptionService) {}
 
     public function register(array $data): User
     {
@@ -24,8 +23,7 @@ class UserService
             ]);
 
             $this->stripeService->createCustomer($user);
-
-            $this->stripeService->subscribeToFreePlan($user);
+            $this->subscriptionService->subscribeToFreePlan($user);
 
             DB::commit();
 
