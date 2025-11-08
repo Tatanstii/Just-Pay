@@ -43,7 +43,7 @@ class RegisterRequest extends FormRequest
     protected function failedValidation(Validator $validator)
     {
         throw new HttpResponseException(
-            $this->errorResponse('Datos inválidos.', 422, $validator->errors()->toArray())
+            $this->errorResponse('Invalid data.', 422, $validator->errors()->toArray())
         );
     }
 }
