@@ -2,6 +2,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { Button } from "../ui/button";
 import { useAuthStore } from "../../store/useAuthStore";
+import { useToast } from "@/store/useToastStore";
 
 type PropTypes = {
     name: string;
@@ -9,14 +10,21 @@ type PropTypes = {
 
 export default function User(props: PropTypes) {
     const navigate = useNavigate();
+    const toast = useToast();
     const { logout } = useAuthStore();
 
     const goToUserPanel = () => {
         navigate({ to: "/user-panel" });
     }
 
-    const handleLogout = () => {
-        logout();
+    const handleLogout = async () => {
+        try {
+            await logout();
+            navigate({ to: "/" });
+        } catch (error) {
+            toast.show((error as Error).message, "error");
+        }
+
     }
 
     return (

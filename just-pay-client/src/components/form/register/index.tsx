@@ -62,26 +62,26 @@ export default function RegisterForm() {
                         <FieldGroup>
                             <Field>
                                 <FieldLabel htmlFor="name">Name</FieldLabel>
-                                <Input id="name" name="name" type="text" placeholder="Name" />
+                                <Input id="name" name="name" type="text" placeholder="Name" autoComplete="name" />
                             </Field>
                             <Field>
                                 <FieldLabel htmlFor="email">Email</FieldLabel>
-                                <Input id="email" name="email" type="email" placeholder="Email" />
+                                <Input id="email" name="email" type="email" placeholder="Email" autoComplete="email" />
                             </Field>
                             <Field>
                                 <FieldLabel htmlFor="password">Password</FieldLabel>
-                                <Input id="password" name="password" type="password" placeholder="Password" />
+                                <Input id="password" name="password" type="password" placeholder="Password" autoComplete="new-password" />
                             </Field>
                             <Field>
                                 <FieldLabel htmlFor="confirm-password">Confirm Password</FieldLabel>
-                                <Input id="password-confirmation" name="password_confirmation" type="password" placeholder="Confirm Password" />
+                                <Input id="password-confirmation" name="password_confirmation" type="password" placeholder="Confirm Password" autoComplete="new-password" />
                             </Field>
                             <Field>
                                 <Button type="submit" className="w-full mt-4">Register</Button>
                                 <Button type="button" variant="secondary" className="w-full mt-4" onClick={handleBack}>Cancel</Button>
                             </Field>
                             <Field>
-                                <Button variant="link" className="w-full mt-2" onClick={handleGoLogin}>Already have an account? Login</Button>
+                                <Button type="button" variant="link" className="w-full mt-2" onClick={handleGoLogin}>Already have an account? Login</Button>
                             </Field>
                         </FieldGroup>
                     </FieldSet>

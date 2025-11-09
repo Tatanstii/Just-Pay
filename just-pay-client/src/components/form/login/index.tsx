@@ -64,18 +64,18 @@ export default function LoginForm() {
 
                             <Field>
                                 <FieldLabel htmlFor="email">Email</FieldLabel>
-                                <Input id="email" name="email" type="email" placeholder="Email" />
+                                <Input id="email" name="email" type="email" placeholder="Email" autoComplete="email" />
                             </Field>
                             <Field>
                                 <FieldLabel htmlFor="password">Password</FieldLabel>
-                                <Input id="password" name="password" type="password" placeholder="Password" />
+                                <Input id="password" name="password" type="password" placeholder="Password" autoComplete="current-password" />
                             </Field>
                             <Field>
                                 <Button type="submit" className="w-full mt-4">Login</Button>
                                 <Button type="button" variant="secondary" className="w-full mt-4" onClick={handleBack}>Cancel</Button>
                             </Field>
                             <Field>
-                                <Button variant="link" className="w-full mt-2" onClick={handleGoRegister}>Don't have an account? Register  </Button>
+                                <Button type="button" variant="link" className="w-full mt-2" onClick={handleGoRegister}>Don't have an account? Register  </Button>
                             </Field>
                         </FieldGroup>
                     </FieldSet>

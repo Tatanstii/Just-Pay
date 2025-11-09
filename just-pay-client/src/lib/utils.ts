@@ -25,9 +25,9 @@ export function errorResponse(message: string, errors: Errors = []): ErrorRespon
   }
 }
 
-export const formatCurrency = (amount: number, locale = 'en-US', currency = 'USD') => {
-  return new Intl.NumberFormat(locale, {
+export const formatCurrency = (cents: number) => {
+  return new Intl.NumberFormat('en-US', {
     style: 'currency',
-    currency,
-  }).format(amount);
-}
+    currency: 'USD',
+  }).format(cents / 100);
+};
