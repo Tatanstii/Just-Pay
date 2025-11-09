@@ -7,6 +7,7 @@ import { registerSchema } from "../../../schemas/auth";
 import { useAuthStore } from "../../../store/useAuthStore";
 import { useNavigate } from "@tanstack/react-router";
 import { useToast } from "../../../store/useToastStore";
+import type { RegisterResponse, SuccessResponse } from "../../../type";
 
 export default function RegisterForm() {
     const navigate = useNavigate();
@@ -37,6 +38,8 @@ export default function RegisterForm() {
         try {
             const response = await register(validated.data);
             if (response.status === 'success') {
+                const safeResponse = (response as SuccessResponse<RegisterResponse>);
+                localStorage.setItem('auth_token', safeResponse.data.access_token);
                 await fetchUser();
                 toast.show("Registration successful!", "success");
             }

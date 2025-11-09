@@ -1,10 +1,15 @@
+import RegisterForm from "../components/form/register";
+import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
+
 export default function RegisterPage() {
-    return <div className="h-min">
-        <main className="py-4 px-10 grid place-items-center min-h-[80vh]">
-            <div className="flex flex-col gap-2 justify-center items-center mb-8 text-primary">
-                <h2 className="text-4xl">Register Page</h2>
-                <p className="text-2xl">This is where the registration form will go.</p>
-            </div>
-        </main>
-    </div>;
+    return <main className="py-4 px-10 grid place-items-center">
+        <Card className="w-full max-w-lg">
+            <CardHeader>
+                <CardTitle className="text-2xl text-center">Create a new user</CardTitle>
+            </CardHeader>
+            <CardContent>
+                <RegisterForm />
+            </CardContent>
+        </Card>
+    </main>
 }

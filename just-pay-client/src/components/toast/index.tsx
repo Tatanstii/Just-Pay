@@ -7,7 +7,7 @@ export default function Toast() {
 
     if (!visible) return null;
 
-    const backgroundColor = type === 'success' ? 'bg-green-500' : type === 'error' ? 'bg-red-500' : 'bg-blue-500';
+    const backgroundColor = type === 'success' ? 'bg-green-700' : type === 'error' ? 'bg-red-700' : 'bg-blue-700';
 
     return (
         <ToastPortal show={visible}>

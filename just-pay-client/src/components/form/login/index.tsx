@@ -7,6 +7,7 @@ import { loginSchema } from "../../../schemas/auth";
 import { useAuthStore } from "../../../store/useAuthStore";
 import { useNavigate } from "@tanstack/react-router";
 import { useToast } from "../../../store/useToastStore";
+import type { LoginResponse, SuccessResponse } from "../../../type";
 
 export default function LoginForm() {
     const navigate = useNavigate();
@@ -37,11 +38,14 @@ export default function LoginForm() {
         try {
             const response = await login(validated.data);
             if (response.status === 'success') {
-                await fetchUser();
-                toast.show("Login successful!", "success");
+                const safeResponse = (response as SuccessResponse<LoginResponse>);
+                localStorage.setItem('auth_token', safeResponse.data.access_token);
+                fetchUser().then(() => {
+                    toast.show("Login successful!", "success");
+                    navigate({ to: "/dashboard" });
+                });
             }
 
-            navigate({ to: "/dashboard" });
         } catch (error) {
             if (error instanceof AxiosError) {
                 toast.show(error.response?.data?.message, 'error');

@@ -1,9 +1,12 @@
 import { useNavigate } from "@tanstack/react-router";
 import { Button } from "../ui/button";
 import Logo from "../logo";
+import { useAuthStore } from "../../store/useAuthStore";
+import User from "../user";
 
 export default function LandingHeader() {
     const navigate = useNavigate();
+    const { user } = useAuthStore();
 
     const handleSignIn = () => {
         navigate({ to: "/login" });
@@ -18,8 +21,16 @@ export default function LandingHeader() {
             <div className="flex flex-row justify-between items-center">
                 <Logo />
                 <div className="flex flex-row items-center gap-4">
-                    <Button variant="ghost" className="hover:cursor-pointer text-accent" onClick={handleRegister}>Register</Button>
-                    <Button variant="secondary" className="hover:cursor-pointer" onClick={handleSignIn}>Sign in</Button>
+                    {
+                        user ? (
+                            <User name={user.name} />
+                        ) : (
+                            <>
+                                <Button variant="ghost" className="hover:cursor-pointer text-accent" onClick={handleRegister}>Register</Button>
+                                <Button variant="secondary" className="hover:cursor-pointer" onClick={handleSignIn}>Sign in</Button>
+                            </>
+                        )
+                    }
                 </div>
             </div>
         </header>
