@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Plan;
 use App\Traits\ApiResponseTrait;
 use Illuminate\Http\Request;
 use App\Services\SubscriptionService;
@@ -30,6 +31,30 @@ class SubscriptionController extends Controller
             return $this->successResponse(null, 'Subscription cancelled successfully.');
         } catch (\Throwable $th) {
             return $this->errorResponse('Failed to cancel subscription.', 500, $th->getMessage());
+        }
+    }
+
+    public function createCheckoutSession(Request $request, Plan $plan)
+    {
+        $user = $request->user();
+
+        $successUrl = $request->query('success_url');
+        $cancelUrl = $request->query('cancel_url');
+
+        if ($user->plan->id === $plan->id) {
+            return $this->errorResponse('You are already subscribed to this plan.', 400);
+        }
+
+        if (!$successUrl && !env('FRONTEND_SUCCESS_URL')) {
+            return $this->errorResponse('Success URL is required.', 400);
+        }
+
+        try {
+            $checkoutUrl = $this->subscriptionService->createCheckoutSession($user, $plan, $successUrl, $cancelUrl);
+
+            return $this->successResponse(['checkout_url' => $checkoutUrl]);
+        } catch (\Throwable $th) {
+            return $this->errorResponse('Failed to create checkout session.', 500, $th->getMessage());
         }
     }
 }

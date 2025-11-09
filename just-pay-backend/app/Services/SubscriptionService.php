@@ -6,9 +6,27 @@ use App\DTO\SubscriptionDTO;
 use App\Models\Plan;
 use App\Models\User;
 use Illuminate\Support\Facades\Log;
+use Stripe\Checkout\Session;
+use Stripe\Stripe;
 
 class SubscriptionService
 {
+    public function subscribeToPlan(User $user, Plan $plan)
+    {
+        try {
+            if ($user->subscribed('default')) {
+                $user->subscription('default')->swap($plan->stripe_price_id);
+            } else {
+                $user->newSubscription('default', $plan->stripe_price_id)->create();
+            }
+
+            $user->update(['plan_id' => $plan->id]);
+        } catch (\Throwable $th) {
+            Log::error('Error al suscribir al plan: ' . $th->getMessage());
+            throw $th;
+        }
+    }
+
     public function getCurrentSubscription(User $user)
     {
         try {
@@ -35,9 +53,8 @@ class SubscriptionService
     public function subscribeToFreePlan(User $user)
     {
         try {
-
             if ($user->subscribed('default')) {
-                return;
+                throw new \Exception('The user is already subscribed to free plan.');
             }
 
             $plan = Plan::where('stripe_price_id', env('STRIPE_FREE_PLAN_PRICE_ID'))->firstOrFail();
@@ -60,7 +77,7 @@ class SubscriptionService
             }
 
             if ($user->plan->stripe_price_id == env('STRIPE_FREE_PLAN_PRICE_ID')) {
-                throw new \Exception('No se puede cancelar la suscripción al plan gratuito.');
+                throw new \Exception('Do not cancel free plan subscription.');
             }
 
             if ($subscription) {
@@ -68,6 +85,31 @@ class SubscriptionService
             }
         } catch (\Throwable $th) {
             Log::error('Error al cancelar la suscripción: ' . $th->getMessage());
+            throw $th;
+        }
+    }
+
+    public function createCheckoutSession(User $user, Plan $plan, string $successUrl, ?string $cancelUrl)
+    {
+        try {
+
+            Stripe::setApiKey(env('STRIPE_SECRET'));
+
+            $session = Session::create([
+                'customer' => $user->stripe_id,
+                'payment_method_types' => ['card'],
+                'line_items' => [[
+                    'price' => $plan->stripe_price_id,
+                    'quantity' => 1,
+                ]],
+                'mode' => 'subscription',
+                'success_url' => $successUrl,
+                'cancel_url' => $cancelUrl,
+            ]);
+
+            return $session->url;
+        } catch (\Throwable $th) {
+            Log::error('Error al crear la sesión de checkout: ' . $th->getMessage());
             throw $th;
         }
     }

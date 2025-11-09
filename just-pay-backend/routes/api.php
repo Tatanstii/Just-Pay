@@ -17,6 +17,8 @@ Route::middleware(['auth:sanctum', 'check.token.expiration'])->group(function ()
     Route::prefix('subscriptions')->group(function () {
         Route::get('current', [SubscriptionController::class, 'getCurrentSubscription']);
         Route::post('cancel', [SubscriptionController::class, 'cancelSubscription']);
+
+        Route::post('checkout/{plan}', [SubscriptionController::class, 'createCheckoutSession']);
     });
 
     Route::prefix('plans')->group(function () {
