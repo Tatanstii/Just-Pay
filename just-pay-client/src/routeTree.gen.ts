@@ -13,6 +13,7 @@ import { Route as RegisterRouteImport } from './routes/register'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as _protectedRouteImport } from './routes/__protected'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as _protectedUserPanelRouteImport } from './routes/__protected/user-panel'
 import { Route as _protectedDashboardRouteImport } from './routes/__protected/dashboard'
 
 const RegisterRoute = RegisterRouteImport.update({
@@ -34,6 +35,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const _protectedUserPanelRoute = _protectedUserPanelRouteImport.update({
+  id: '/user-panel',
+  path: '/user-panel',
+  getParentRoute: () => _protectedRoute,
+} as any)
 const _protectedDashboardRoute = _protectedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -45,12 +51,14 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/dashboard': typeof _protectedDashboardRoute
+  '/user-panel': typeof _protectedUserPanelRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/dashboard': typeof _protectedDashboardRoute
+  '/user-panel': typeof _protectedUserPanelRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -59,12 +67,13 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/__protected/dashboard': typeof _protectedDashboardRoute
+  '/__protected/user-panel': typeof _protectedUserPanelRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/register' | '/dashboard'
+  fullPaths: '/' | '/login' | '/register' | '/dashboard' | '/user-panel'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/register' | '/dashboard'
+  to: '/' | '/login' | '/register' | '/dashboard' | '/user-panel'
   id:
     | '__root__'
     | '/'
@@ -72,6 +81,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/register'
     | '/__protected/dashboard'
+    | '/__protected/user-panel'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -111,6 +121,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/__protected/user-panel': {
+      id: '/__protected/user-panel'
+      path: '/user-panel'
+      fullPath: '/user-panel'
+      preLoaderRoute: typeof _protectedUserPanelRouteImport
+      parentRoute: typeof _protectedRoute
+    }
     '/__protected/dashboard': {
       id: '/__protected/dashboard'
       path: '/dashboard'
@@ -123,10 +140,12 @@ declare module '@tanstack/react-router' {
 
 interface _protectedRouteChildren {
   _protectedDashboardRoute: typeof _protectedDashboardRoute
+  _protectedUserPanelRoute: typeof _protectedUserPanelRoute
 }
 
 const _protectedRouteChildren: _protectedRouteChildren = {
   _protectedDashboardRoute: _protectedDashboardRoute,
+  _protectedUserPanelRoute: _protectedUserPanelRoute,
 }
 
 const _protectedRouteWithChildren = _protectedRoute._addFileChildren(

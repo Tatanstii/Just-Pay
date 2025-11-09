@@ -11,8 +11,8 @@ export default function User(props: PropTypes) {
     const navigate = useNavigate();
     const { logout } = useAuthStore();
 
-    const goToDashboard = () => {
-        navigate({ to: "/dashboard" });
+    const goToUserPanel = () => {
+        navigate({ to: "/user-panel" });
     }
 
     const handleLogout = () => {
@@ -27,7 +27,7 @@ export default function User(props: PropTypes) {
             <DropdownMenuContent>
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={goToDashboard} className="hover:cursor-pointer">Dashboard</DropdownMenuItem>
+                <DropdownMenuItem onClick={goToUserPanel} className="hover:cursor-pointer">User panel</DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleLogout} className="hover:cursor-pointer text-red-700 hover:text-red-600">Logout</DropdownMenuItem>
             </DropdownMenuContent>
