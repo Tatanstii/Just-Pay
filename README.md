@@ -95,6 +95,10 @@ php artisan migrate --seed
 
 # Iniciar servidor
 php artisan serve
+
+# Configurar webhook
+stripe login
+stripe listen --forward-to 127.0.0.1:8000/api/webhook
 ```
 
 
