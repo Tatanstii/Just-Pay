@@ -68,3 +68,9 @@ export type Subscription = {
 };
 
 export type SubscriptionResponse = SuccessResponse<Subscription>;
+
+export type CheckoutSession = {
+    checkout_url: string;
+}
+
+export type CheckoutSessionResponse = SuccessResponse<CheckoutSession>;
