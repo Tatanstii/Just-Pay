@@ -37,9 +37,10 @@ class SubscriptionController extends Controller
     public function createCheckoutSession(Request $request, Plan $plan)
     {
         $user = $request->user();
+        $body = $request->all();
 
-        $successUrl = $request->query('success_url');
-        $cancelUrl = $request->query('cancel_url');
+        $successUrl = $body['success_url'] ?? null;
+        $cancelUrl = $body['cancel_url'] ?? null;
 
         if ($user->plan->id === $plan->id) {
             return $this->errorResponse('You are already subscribed to this plan.', 400);
