@@ -13,7 +13,7 @@ export default function Index() {
     }
 
     return (
-        <div className="wave_background">
+        <div className="wave_background min-h-screen">
             <Header />
             <main className="py-4 px-10 grid place-items-center min-h-[80vh]">
                 <div className="flex flex-col gap-2 justify-center items-center mb-8 text-primary">

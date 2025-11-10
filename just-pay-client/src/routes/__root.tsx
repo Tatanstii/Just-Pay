@@ -6,11 +6,11 @@ const RootLayout = () => {
 
   return (
     (
-      <>
+      <div className='min-h-screen'>
         <Toast />
         <Outlet />
         <TanStackRouterDevtools position='bottom-right' />
-      </>
+      </div>
     )
   )
 }
