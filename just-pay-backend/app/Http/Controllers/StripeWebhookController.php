@@ -34,11 +34,14 @@ class StripeWebhookController extends Controller
 
             $type = $event->type;
             $data = json_decode(json_encode($event->data->object), true);
-
             $planId = match ($type) {
                 'product.updated', 'product.created' => $this->planSyncService->syncProduct($data),
                 'price.updated', 'price.created' => $this->planSyncService->syncPrice($data),
                 'product.deleted' => $this->planSyncService->syncDeleteProduct($data),
+
+                'customer.subscription.created',
+                'customer.subscription.updated',
+                'customer.subscription.deleted' => $this->planSyncService->syncSubscription($data),
                 default => response()->json(['message' => 'Event type not handled']),
             };
 

@@ -3,16 +3,20 @@
 namespace App\Services;
 
 use App\Models\Plan;
+use App\Models\User;
 use Illuminate\Support\Facades\Log;
 use Stripe\Price;
+use Stripe\Subscription;
 
 class PlanSyncService
 {
+
+
     public function syncProduct(array $product): int|null
     {
         try {
             $plan = Plan::updateOrCreate(
-                ['stripe_product_id' => $product['id']],
+                ['stripe_price_id' => env('STRIPE_FREE_PLAN_PRICE_ID')],
                 ['name' => $product['name'], 'description' => $product['description']]
             );
 
@@ -66,6 +70,54 @@ class PlanSyncService
         } catch (\Throwable $th) {
             Log::error('PlanSyncService syncDeleteProduct error: ' . $th->getMessage());
             throw new \Exception("Failed to sync delete Product ID: {$product['id']}. Error: " . $th->getMessage());
+        }
+    }
+
+    public function syncSubscription(array $subscription): int|null
+    {
+        try {
+            $user = User::where('stripe_id', $subscription['customer'])->first();
+
+
+            if (!$user) {
+                throw new \Exception("User not found for Customer ID: {$subscription['customer']}");
+            }
+
+            $plan = Plan::where('stripe_price_id', $subscription['items']['data'][0]['price']['id'])->first();
+
+            if (!$plan) {
+                throw new \Exception("Plan not found for Price ID: {$subscription['items']['data'][0]['price']['id']}");
+            }
+
+            $newSubscriptionId = $subscription['id'];
+
+            $existingSubs = Subscription::all([
+                'customer' => $user->stripe_id,
+                'status' => 'active',
+                'limit' => 100,
+            ]);
+
+            foreach ($existingSubs->data as $sub) {
+                if ($sub->id === $newSubscriptionId) {
+                    continue;
+                }
+
+                try {
+                    $remote = Subscription::retrieve($sub->id);
+                    $remote->cancel();
+                } catch (\Throwable $e) {
+                    Log::error("PlanSyncService: error cancelando suscripción {$sub->id} para usuario {$user->id}: " . $e->getMessage());
+                }
+            }
+
+            $user->update([
+                'plan_id' => $plan->id
+            ]);
+
+            return $plan?->id;
+        } catch (\Throwable $th) {
+            Log::error('PlanSyncService syncSubscription error: ' . $th->getMessage());
+            throw new \Exception("Failed to sync Subscription ID: {$subscription['id']}. Error: " . $th->getMessage());
         }
     }
 }
