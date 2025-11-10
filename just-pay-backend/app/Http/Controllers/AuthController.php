@@ -29,6 +29,6 @@ class AuthController extends Controller
     public function user()
     {
         $user = $this->authService->getAuthenticatedUser();
-        return $this->successResponse($user, 'Authenticated user retrieved successfully');
+        return $this->successResponse(['user' => $user], 'Authenticated user retrieved successfully');
     }
 }
