@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('interval')->nullable();
             $table->json('features')->nullable();
             $table->boolean('active')->default(true);
+            $table->boolean('is_free')->default(false);
             $table->timestamps();
         });
     }

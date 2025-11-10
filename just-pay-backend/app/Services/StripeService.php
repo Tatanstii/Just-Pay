@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Models\Plan;
 use App\Models\User;
-use Illuminate\Support\Facades\Log;
 use Stripe\Price;
 use Stripe\Product;
 use Stripe\Stripe;
@@ -23,6 +22,7 @@ class StripeService
                 'description' => 'You only have one free plan.',
                 'stripe_product_id' => null,
                 'stripe_price_id' => env('STRIPE_FREE_PLAN_PRICE_ID'),
+                'is_free' => true,
                 'amount' => 0,
                 'currency' => 'usd',
                 'interval' => 'month',
@@ -44,6 +44,7 @@ class StripeService
                     'amount' => $price->unit_amount ?? null,
                     'currency' => $price->currency ?? null,
                     'interval' => $price->recurring['interval'] ?? null,
+                    'is_free' => env('STRIPE_FREE_PLAN_PRICE_ID') === ($price->id ?? null),
                 ]);
             } else {
                 $existingPlan->update([
@@ -54,6 +55,7 @@ class StripeService
                     'amount' => $price->unit_amount ?? null,
                     'currency' => $price->currency ?? null,
                     'interval' => $price->recurring['interval'] ?? null,
+                    'is_free' => env('STRIPE_FREE_PLAN_PRICE_ID') === ($price->id ?? null),
                 ]);
             }
         }

@@ -16,11 +16,14 @@ class Plan extends Model
         'interval',
         'features',
         'active',
+        'is_free',
     ];
 
     protected $casts = [
         'features' => 'array',
         'amount' => 'integer',
+        'active' => 'boolean',
+        'is_free' => 'boolean',
     ];
 
     public function users()
