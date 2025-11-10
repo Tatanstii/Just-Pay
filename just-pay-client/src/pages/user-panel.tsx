@@ -1,10 +1,14 @@
 import Plans from "@/components/plans";
 import { getSubscription } from "@/services/subscription";
+import { useToast } from "@/store/useToastStore";
 import type { SubscriptionResponse } from "@/type";
 import { useQuery } from "@tanstack/react-query";
+import { useSearch } from "@tanstack/react-router";
 import { Suspense } from "react";
 
 export default function UserPanelPage() {
+    const search = useSearch({ strict: false });
+    const toast = useToast();
     const { data, isLoading, error } = useQuery<SubscriptionResponse | Error>({
         queryKey: ['dashboardData'],
         queryFn: () => getSubscription(),
@@ -18,6 +22,10 @@ export default function UserPanelPage() {
 
     if (error) {
         return <div>Error: {error.message}</div>;
+    }
+
+    if ('planUpdated' in search && search.planUpdated == 'true') {
+        toast.show('Plan updated successfully!', 'success');
     }
 
     return (
