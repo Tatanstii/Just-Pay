@@ -54,6 +54,7 @@ export type Plan = {
     amount: number;
     currency: string;
     interval: 'month';
+    is_free: boolean;
 }
 
 export type Plans = Plan[];

@@ -73,7 +73,7 @@ class SubscriptionService
             $subscription = $user->subscription('default');
 
             if (!$subscription->active()) {
-                throw new \Exception('La suscripción no está activa.');
+                throw new \Exception('No active subscription to cancel.');
             }
 
             if ($user->plan->stripe_price_id == env('STRIPE_FREE_PLAN_PRICE_ID')) {
@@ -81,7 +81,9 @@ class SubscriptionService
             }
 
             if ($subscription) {
-                $subscription->cancel();
+                $subscription->swap(env('STRIPE_FREE_PLAN_PRICE_ID'));
+                $freePlan = Plan::where('stripe_price_id', env('STRIPE_FREE_PLAN_PRICE_ID'))->firstOrFail();
+                $user->update(['plan_id' => $freePlan->id]);
             }
         } catch (\Throwable $th) {
             Log::error('Error al cancelar la suscripción: ' . $th->getMessage());

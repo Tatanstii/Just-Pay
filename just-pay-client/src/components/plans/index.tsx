@@ -2,7 +2,7 @@ import { getPlans } from '@/services/plans'
 import { useQuery } from '@tanstack/react-query'
 import type { CheckoutSessionResponse, PlansResponse } from '@/type'
 import PlanCard from '../plan-card'
-import { createCheckoutSession } from '@/services/subscription'
+import { cancelSubscription, createCheckoutSession } from '@/services/subscription'
 import { VITE_CANCEL_CHECKOUT_URL, VITE_SUCCESS_CHECKOUT_URL } from '@/lib/const'
 import { useToast } from '@/store/useToastStore'
 import { AxiosError } from 'axios'
@@ -44,12 +44,26 @@ export default function Plans(props: PropTypes) {
         }
     };
 
+
+    const handleCancelSubscription = async () => {
+        try {
+            await cancelSubscription();
+            toast.show("Subscription cancelled successfully.", "success");
+        } catch (error) {
+            if (error instanceof AxiosError) {
+                toast.show(error.message, "error", [error.response?.data?.message || ""]);
+                return;
+            }
+            toast.show("An unexpected error occurred.", "error");
+        }
+    };
+
     return (
-        <div className='flex flex-row gap-4'>
+        <div className='flex flex-row flex-wrap gap-4'>
             {
                 plans.map((plan) => (
-                    <div key={plan.id} className='w-1/3'>
-                        <PlanCard {...plan} currentPlanId={props.currentPlanId} onStartCheckout={handleStartCheckout} />
+                    <div key={plan.id} className='min-w-1/4'>
+                        <PlanCard {...plan} currentPlanId={props.currentPlanId} onStartCheckout={handleStartCheckout} onCancelSubscription={handleCancelSubscription} />
                     </div>
                 ))
             }

@@ -19,3 +19,11 @@ export const createCheckoutSession = async (planId: number, successUrl: string, 
     }
     return response.data;
 }
+
+export const cancelSubscription = async (): Promise<void | Error> => {
+    const response = await request.post(`/api/subscriptions/cancel`);
+    if (response.status !== 200) {
+        throw new Error(response.data.message);
+    }
+    return response.data;
+}
