@@ -32,13 +32,11 @@ class StripeWebhookController extends Controller
                 $endpointSecret
             );
 
-            // Evitamos procesar el mismo evento dos veces
             $existing = StripeWebhookEvent::where('stripe_event_id', $event->id)->first();
             if ($existing) {
                 return $this->successResponse("Event already processed.", 200);
             }
 
-            // Guardamos el evento en la base
             $webhookEvent = StripeWebhookEvent::create([
                 'stripe_event_id' => $event->id,
                 'type' => $event->type,
@@ -49,7 +47,6 @@ class StripeWebhookController extends Controller
             $data = $webhookEvent->payload;
             $planId = null;
 
-            // Procesamos según el tipo de evento
             switch ($event->type) {
                 case 'product.created':
                 case 'product.updated':
@@ -76,7 +73,6 @@ class StripeWebhookController extends Controller
                     break;
             }
 
-            // Marcamos el evento como procesado
             $webhookEvent->update([
                 'status' => 'processed',
                 'processed_at' => now(),
