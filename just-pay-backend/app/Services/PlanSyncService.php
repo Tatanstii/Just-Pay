@@ -16,7 +16,6 @@ class PlanSyncService
                 ['name' => $product['name'], 'description' => $product['description'], 'active' => true]
             );
 
-            // Si tiene precio por defecto, sincronizarlo
             if (!empty($product['default_price'])) {
                 $this->syncPrice(['id' => $product['default_price'], 'product' => $product['id']]);
             }
